@@ -1,11 +1,14 @@
 from flask import Flask,render_template,redirect,url_for,request
-import os
+import os,csv
+import pandas as pd
 from werkzeug.utils import secure_filename
+import func
 app = Flask(__name__)
 
 bool_dict = {}
 sample_input_path = "./sample_input"
 sample_output_path = "./transciptsIITP"
+
 def handle_file_save(FileObject,req_resp_name):
     if not FileObject.filename:
         bool_dict[f"{req_resp_name}"] = "Didn't upload any file.Its ok its optional"
@@ -19,9 +22,20 @@ def handle_file_save(FileObject,req_resp_name):
     FileObject.save(os.path.join(sample_input_path,filename))
     bool_dict[f"{req_resp_name}"] = "Uploaded Successfully"
     return 
+
 @app.route('/',methods=['GET','POST'])
 def index(): 
     return render_template('index.html',data = bool_dict)
+
+@app.route('/upload_files',methods=['GET','POST'])
+def upload_files(): 
+    FileObject = request.files.get("grades")
+    handle_file_save(FileObject,"grades")
+    FileObject = request.files.get("names-roll")
+    handle_file_save(FileObject,"names-roll")
+    FileObject = request.files.get("subjects_master")
+    handle_file_save(FileObject,"subjects_master")
+    return redirect(url_for('index'))
 
 @app.route('/create_range',methods=['GET','POST'])
 def create_range():
@@ -40,12 +54,19 @@ def create_range():
 
 @app.route('/create_all',methods=['GET','POST'])
 def create_all():
-    os.makedirs(sample_output_path,exist_ok = True)
+    nr = pd.read_csv('./sample_input/names-roll.csv')
+    sm = pd.read_csv('./sample_input/subjects_master.csv')
+    names_data = open("./sample_input/grades.csv","r")
+    names_csv = csv.reader(names_data)
+    names_list = [list(record) for record in names_csv][1:]
+    func.generate_transcripts(nr,sm,names_list)
     return redirect(url_for('index'))
+
 @app.route('/seal',methods=['GET','POST'])
 def seal():
     FileObject = request.files.get("seal")
     handle_file_save(FileObject,"seal")
+    bool_dict['create_all'] = "Generated_Successfully"
     return redirect(url_for('index'))
 
 

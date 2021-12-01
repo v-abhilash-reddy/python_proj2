@@ -5,30 +5,41 @@
 
 {%block body%}
     <h1>Transcript Generator</h1>
-    <form action="create_range" method="post" >
-        <label for="range">Give a range of RollNos</label>
-        <input type="text" id="range" name = "range">
-        <button type="submit">Create Transcripts</button>       
-        {{data['create_range']}}
-        <br><br>
-    </form>
-    <form action="create_all" method="post">
-        <button type="submit">Generate all Transcripts</button>      
-        <br><br>
-   </form>
-   <form action="seal" method="post" enctype="multipart/form-data">
-        <label for="seal">Select seal file</label>
-        <input type="file" id="seal" name = "seal">
-        <button type="submit">Upload</button>
-        {{data['seal']}}
-        <br><br>
-    </form>
-   <form action="signature" method="post" enctype="multipart/form-data">
-        <label for="signature">Select signature file</label>
-        <input type="file" id="signature" name ="signature">
-        <button type="submit">Upload</button>
-        {{data['signature']}}
-        <br><br>
-    </form>
-
+    <div class="App">
+        <form action="upload_files" method="post" enctype="multipart/form-data">
+            <label for="grades">Select grades.csv file:</label>
+            <input type="file" id="grades" name = "grades"><br><br>
+            <label for="names-roll">Select names-rollno.csv file: </label>
+            <input type="file" id="names-roll" name = "names-roll"><br><br>
+            <label for="subjects_master">Select Subjects_master file: </label>
+            <input type="file" id="subjects_master" name = "subjects_master"><br><br>
+            <button type="submit" class="Upload">Upload</button><br><br>
+        </form>
+        <form action="create_range" method="post" >     
+            <label for="range">Give a range of RollNos</label>
+            <input type="text" id="range" name = "range">
+            <button type="submit">Create Transcripts</button>       
+            {{data['create_range']}}
+            <br><br>
+        </form>
+        <form action="create_all" method="post">
+            <button type="submit">Generate all Transcripts</button>      
+            {{data['create_all']}}
+            <br><br>
+        </form>
+        <form action="seal" method="post" enctype="multipart/form-data">
+            <label for="seal">Select seal file</label>
+            <input type="file" id="seal" name = "seal">
+            <button type="submit">Upload</button>
+            {{data['seal']}}
+            <br><br>
+        </form>
+        <form action="signature" method="post" enctype="multipart/form-data">
+            <label for="signature">Select signature file</label>
+            <input type="file" id="signature" name ="signature">
+            <button type="submit">Upload</button>
+            {{data['signature']}}
+            <br><br>
+        </form>
+    </div>
 {%endblock%}
