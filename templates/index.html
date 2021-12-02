@@ -4,41 +4,45 @@
 {%endblock%}
 
 {%block body%}
-    <h1>Transcript Generator</h1>
     <div class="App">
+        <h1>Transcript Generator</h1>
+        <fieldset>
         <form action="upload_files" method="post" enctype="multipart/form-data">
             <label for="grades">Select grades.csv file:</label>
+            <hr>
             <input type="file" id="grades" name = "grades"><br><br>
             <label for="names-roll">Select names-rollno.csv file: </label>
+            <hr>
             <input type="file" id="names-roll" name = "names-roll"><br><br>
             <label for="subjects_master">Select Subjects_master file: </label>
+            <hr>
             <input type="file" id="subjects_master" name = "subjects_master"><br><br>
-            <button type="submit" class="Upload">Upload</button><br><br> 
+            <button type="submit" class="Upload">Upload</button>
             {{data['upload_files']}}
         </form>
         <form action="seal" method="post" enctype="multipart/form-data">
-            <label for="seal">Select seal file</label>
+            <label for="seal">Select seal file</label><hr>
             <input type="file" id="seal" name = "seal">
-            <button type="submit">Upload</button>
+            <button type="submit" class="Upload">Upload</button>
             {{data['seal']}}
             <br><br>
         </form>
         <form action="signature" method="post" enctype="multipart/form-data">
-            <label for="signature">Select signature file</label>
+            <label for="signature">Select signature file</label><hr>
             <input type="file" id="signature" name ="signature">
-            <button type="submit">Upload</button>
+            <button type="submit" class="Upload">Upload</button>
             {{data['signature']}}
             <br><br>
         </form>
         <form action="create_range" method="post" >     
-            <label for="range">Give a range of RollNos</label>
+            <label for="range">Give a range of RollNos</label><hr>
             <input type="text" id="range" name = "range">
-            <button type="submit">Create Transcripts</button>       
+            <button class="Upload" type="submit">Create Transcripts</button>       
             {{data['create_range']}}
             <br><br>
         </form>
         <form action="create_all" method="post">
-            <button type="submit">Generate all Transcripts</button>      
+            <button class="Upload" type="submit">Generate all Transcripts</button> <hr>     
             {{data['create_all']}}
             <br><br>
         </form>
@@ -50,5 +54,7 @@
                 {%endfor%}
             {%endif%}
         </div>
+    </fieldset>
+    <br>
     </div>
 {%endblock%}
