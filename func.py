@@ -1,12 +1,12 @@
 from fpdf import FPDF
-import csv,os
+import csv,os,re
 import pandas as pd
 
 def generate_header_layout(pdf,*stud_info):
     pdf.set_font("Times",'B',size=10)
-    pdf.image('./sample_input/photos/Picture.png' ,15,11,30,25)
-    pdf.image('./sample_input/photos/Picture3.png',50,11,300,25)
-    pdf.image('./sample_input/photos/Picture.png' ,365,11,30,25)
+    pdf.image('./static/photos/Picture.png' ,15,11,30,25)
+    pdf.image('./static/photos/Picture3.png',50,11,300,25)
+    pdf.image('./static/photos/Picture.png' ,365,11,30,25)
 
     pdf.rect(10,10,390,277)
     pdf.rect(10,40,390,0)
@@ -71,22 +71,34 @@ def generate_data(nr,sm,names_list):
         table_dict[rollno,semno].append(st_list)
     return table_dict
 
+def generate_rollno_list(nr,start_roll,end_roll):
+    nr_dict,missing_nums,existing_nums={},[],[]
+    for i in range(len(nr)): nr_dict[nr.at[i,"Roll"]] = nr.at[i,"Name"]
+    start_roll_no,end_roll_no = int(start_roll[6:]),int(end_roll[6:])
+    st = start_roll[:6]
+    for i in range(start_roll_no,end_roll_no+1):
+        if len(str(i))==1: num = "0"+str(i)
+        else: num = str(i)
+        rollno = st+num
+        if rollno not in nr_dict:
+            missing_nums.append(rollno)
+        else :
+            existing_nums.append([rollno,nr_dict[rollno]]) 
+    return pd.DataFrame(existing_nums,columns = ["Roll","Name"]),missing_nums
 
-
-def generate_transcripts(nr,sm,names_list):
+def generate_transcripts(nr,sm,names_list,start_roll='',end_roll=''):
     credit_map = {'AA':10,'AB':9,'BB':8,'BC':7,'CC':6,'CD':5,'DD':4,'F':0,'I':0,
                 'AA*':10,'AB*':9,'BB*':8,'BC*':7,'CC*':6,'CD*':5,'DD*':4,'F*':0,'I*':0}
     courses = {"CS":"Computer Science and Technology","EE":"Electrical Engineering","ME":"Mechanical Engineering","CE":"Civil and Environmental Engineering","CB":"Chemical Engineering","MM":"Metallurgical and Materials Engineering"}
-
-    os.makedirs('sample_output',exist_ok=True)
     table_dict= generate_data(nr,sm,names_list)
-
+    missing_nums = []
+    if start_roll:
+        nr,missing_nums= generate_rollno_list(nr,start_roll,end_roll)
     for index,row in nr.iterrows():
         pdf = FPDF("L" , "mm" ,"A3")
         pdf.add_page()
         roll,name,cpi= row["Roll"],row["Name"],0
         generate_header_layout(pdf,roll,name,2000+int(roll[0:2]),'Btech',courses[roll[4:6]])
-
         pdf.set_font("Times", size=8)
         col_width_list = [15,70,13,10,10]
         coll_width = sum(col_width_list)
@@ -122,5 +134,8 @@ def generate_transcripts(nr,sm,names_list):
             count+=1
 
         generate_footer_layout(mth,pdf)
-        pdf.output('./sample_output/{}.pdf'.format(roll))
-    return
+        pdf.output('./transcriptsIITP/{}.pdf'.format(roll))
+    return missing_nums
+
+# generate_transcripts(nr,sm,names_list,start_roll='0601CS01',end_roll='0601CS28')
+
