@@ -13,19 +13,8 @@
             <input type="file" id="names-roll" name = "names-roll"><br><br>
             <label for="subjects_master">Select Subjects_master file: </label>
             <input type="file" id="subjects_master" name = "subjects_master"><br><br>
-            <button type="submit" class="Upload">Upload</button><br><br>
-        </form>
-        <form action="create_range" method="post" >     
-            <label for="range">Give a range of RollNos</label>
-            <input type="text" id="range" name = "range">
-            <button type="submit">Create Transcripts</button>       
-            {{data['create_range']}}
-            <br><br>
-        </form>
-        <form action="create_all" method="post">
-            <button type="submit">Generate all Transcripts</button>      
-            {{data['create_all']}}
-            <br><br>
+            <button type="submit" class="Upload">Upload</button><br><br> 
+            {{data['upload_files']}}
         </form>
         <form action="seal" method="post" enctype="multipart/form-data">
             <label for="seal">Select seal file</label>
@@ -41,5 +30,25 @@
             {{data['signature']}}
             <br><br>
         </form>
+        <form action="create_range" method="post" >     
+            <label for="range">Give a range of RollNos</label>
+            <input type="text" id="range" name = "range">
+            <button type="submit">Create Transcripts</button>       
+            {{data['create_range']}}
+            <br><br>
+        </form>
+        <form action="create_all" method="post">
+            <button type="submit">Generate all Transcripts</button>      
+            {{data['create_all']}}
+            <br><br>
+        </form>
+        <div class="missing_nums">
+            {%if data['missing_nums'] %}
+                <h2>Missing Numbers are :</h2>
+                {%for missing_item in data['missing_nums']%}
+                    <p>{{missing_item}}</p>
+                {%endfor%}
+            {%endif%}
+        </div>
     </div>
 {%endblock%}
